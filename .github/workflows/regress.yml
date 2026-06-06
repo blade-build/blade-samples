@@ -27,18 +27,18 @@ jobs:
         shell: pwsh
     steps:
       - name: Checkout blade-samples
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           path: blade-samples
 
       - name: Checkout blade-build
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: blade-build/blade-build
           path: blade-build
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: '3.x'
 
