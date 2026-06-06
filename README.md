@@ -1,5 +1,7 @@
 # blade-samples
 
+[![regress](https://github.com/blade-build/blade-samples/actions/workflows/regress.yml/badge.svg)](https://github.com/blade-build/blade-samples/actions/workflows/regress.yml)
+
 Regression samples that build **real third-party C/C++ projects with
 [blade](https://github.com/blade-build/blade-build)** on Windows (MSVC) — used
 to catch regressions in blade's MSVC toolchain, `gen_rule`, DLL export handling,
