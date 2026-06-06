@@ -1,0 +1,26 @@
+# BLADE_ROOT for building Notepad++ with blade (experimental / feasibility test).
+
+# Toolchain: MSVC targeting x64 (host may be arm64 -> cross to x64).
+msvc_config(
+    target_arch='x64',
+    msvc_version='auto',
+    cppflags=['/D_CRT_SECURE_NO_DEPRECATE'],
+)
+
+# C++ flags shared by the cc-family rules. Scintilla/Lexilla use C++17;
+# Notepad++ itself uses C++20 (overridable per target via extra_cxxflags).
+cc_config(
+    cxxflags=['/std:c++20', '/EHsc', '/utf-8'],
+    # This is a 3rd-party codebase, not blade-managed: turn off blade's
+    # first-party dependency-management strictness (header-belongs-to-which-lib
+    # checks) so cross-includes between scintilla/lexilla/npp don't error.
+    hdr_dep_missing_severity='debug',
+)
+
+cc_library_config(
+    generate_dynamic=False,
+    hdrs_missing_severity='debug',
+    # Static libs here have undefined symbols resolved only at the final exe
+    # link (cross-lib + win32); disable the experimental undefined-symbol check.
+    check_undefined=False,
+)

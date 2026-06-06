@@ -1,0 +1,18 @@
+# BLADE_ROOT for building PuTTY with blade (experimental / feasibility test).
+
+msvc_config(
+    target_arch='x64',
+    msvc_version='auto',
+)
+
+cc_config(
+    # 3rd-party codebase: relax blade's first-party dependency-management checks.
+    hdr_dep_missing_severity='debug',
+    c_warnings=['/wd4293', '/wd4334', '/wd4715', '/wd4996'],
+)
+
+cc_library_config(
+    generate_dynamic=False,
+    hdrs_missing_severity='debug',
+    check_undefined=False,
+)

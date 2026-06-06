@@ -1,0 +1,17 @@
+# BLADE_ROOT for building 7-Zip with blade (experimental / feasibility test).
+
+msvc_config(
+    target_arch='x64',
+    msvc_version='auto',
+)
+
+cc_config(
+    # 3rd-party codebase: relax blade's first-party dependency-management checks.
+    hdr_dep_missing_severity='debug',
+)
+
+cc_library_config(
+    generate_dynamic=False,
+    hdrs_missing_severity='debug',
+    check_undefined=False,
+)
