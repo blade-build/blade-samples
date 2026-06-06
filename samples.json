@@ -6,8 +6,8 @@
       "repo": "https://github.com/github/putty",
       "sha": "7003b43963aef6cdf2841c2a882a684025f1d806",
       "targets": ["//:plink", "//:putty"],
-      "prebuild": [],
-      "needs": "perl on PATH (gen_licence runs licence.pl)"
+      "prebuild": ["perl licence.pl"],
+      "needs": "perl on PATH (prebuild runs licence.pl to generate licence.h)"
     },
     {
       "name": "7zip",
