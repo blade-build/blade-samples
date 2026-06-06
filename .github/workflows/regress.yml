@@ -1,0 +1,61 @@
+name: regress
+
+# Build real third-party projects (putty / 7zip / notepad++) with blade by
+# overlaying our BUILD files onto pinned upstream checkouts. Catches blade
+# regressions against non-trivial real-world Windows code.
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 6 * * 1'   # weekly, Monday 06:00 UTC
+
+concurrency:
+  group: regress-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        sample: [putty, 7zip, notepad-plus-plus]
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - name: Checkout blade-samples
+        uses: actions/checkout@v4
+        with:
+          path: blade-samples
+
+      - name: Checkout blade-build
+        uses: actions/checkout@v4
+        with:
+          repository: blade-build/blade-build
+          path: blade-build
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install ninja
+        run: pip install ninja
+
+      # putty's prebuild runs licence.pl. windows-latest ships Strawberry Perl,
+      # but install it as a fallback so the job is self-contained.
+      - name: Ensure perl
+        if: matrix.sample == 'putty'
+        run: |
+          if (Get-Command perl -ErrorAction SilentlyContinue) { perl -v; return }
+          choco install strawberryperl -y --no-progress
+          "C:\Strawberry\perl\bin" >> $env:GITHUB_PATH
+
+      - name: Regress ${{ matrix.sample }}
+        run: >
+          pwsh blade-samples/scripts/regress.ps1
+          -Only ${{ matrix.sample }}
+          -BladeSrc "${{ github.workspace }}/blade-build/src"
